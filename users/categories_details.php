@@ -1,0 +1,182 @@
+<?php
+     require 'header.php';
+     $cat_id =mysqli_real_escape_string($conn, $_GET['id']);
+     if($cat_id>0){
+          $get_product=get_product($conn,'',$cat_id);
+          $sql = "SELECT * FROM categories WHERE id='$cat_id'"; 
+          $result= mysqli_query($conn,$sql);
+          $row = mysqli_fetch_assoc($result);
+     }else{
+          header('Location:index.php');
+          die();
+     }
+?>
+
+<!--Start of the Sign Up portion-->
+     <div class="signup-container" id="signupContainer">
+          <div class="popup-signup">
+               <div class="popup-content">
+                    <img src="https://img.icons8.com/ios/50/000000/close-window.png" alt="Close" class="signup-close">
+                    <h4>Create A New Account</h4>
+                    <?php
+                         if (isset($_GET['error'])){
+                              if ($_GET['error'] == "passwordcheck"){
+                                   echo '<script>alert("The passwords are incorrect!")</script>';
+                              }   
+                              elseif($_GET['error'] == "phnNumberTaken"){
+                                   echo '<script>alert("This Phone Number has already been taken!")</script>';
+                              }
+                              elseif($_GET['error'] == "emailIdTaken"){
+                                   echo '<script>alert("This Email Id has already been taken!")</script>';
+                              }
+                         }
+                    ?>
+                    <form action="includes/signup.inc.php" method="post" class="signup" autocomplete="off" id="formSignup">
+                         <div class="username">
+                              <input type="text" name="first-name" id="person-first-name" placeholder="First Name" required>
+                         </div>
+                         <div class="username">
+                              <input type="text" name="last-name" id="person-last-name" placeholder="Last Name" required>
+                         </div>
+                         <div class="mobilenumber">
+                              <input type="text" name="phn" id="signing-mobile-number" placeholder="Enter Mobile Number" required>
+                         </div>
+                         <div class="email">
+                              <input type="email" name="email" id="signing-user-name" placeholder="Enter Your Email" required>
+                         </div>
+                         <div class="password">
+                              <input type="password" name="pwd" id="signing-password" placeholder="Password" required>
+                         </div>
+                         <div class="password">
+                              <input type="password" name="pwd-repeat" id="signing-password" placeholder="Confirm Password" required>
+                         </div>
+                         <button type="submit" name="signup-submit" id="signup-final" class="final-signup-btn" onclick="getSignup">Sign Up</button>
+                    </form>
+               </div>
+          </div>
+     </div>
+     <script type="text/javascript">
+        document.getElementById("signup").addEventListener("click", function(){
+          document.querySelector(".popup-signup").style.visibility = "visible";
+        })
+        document.querySelector(".signup-close").addEventListener("click", function(){
+          document.querySelector(".popup-signup").style.visibility = "hidden";
+        })
+     </script>
+<!--End of the Signup Form-->
+<!--Coding part of the login Container-->
+     <div class="login-container" id="loginContainer">
+          <div class="popup-login">
+               <div class="popup-content">
+                    <img src="https://img.icons8.com/ios/50/000000/close-window.png" alt="Close" class="login-close">
+                    <h4>Get Yourself In</h4>
+                    <?php
+                         if (isset($_GET['error'])){
+                              if ($_GET['error'] == "EmailorPhnnumbererror"){
+                                   echo '<script>alert("Wrong Email or Phone Number!")</script>';
+                              }
+                              elseif($_GET['error'] == "wrongPassWord"){
+                                   echo '<script>alert("Wrong Password!")</script>';
+                              }
+                        }
+                    ?>
+                    <form action="includes/login.inc.php" class="login" autocomplete="off" method="post">
+                         <div class="username">
+                              <i class="fas fa-user"></i>
+                              <i class="fas fa-close"></i>
+                              <input type="text" name="mailphnid" id="login-username" placeholder="Enter Email or Mobile Number" required>
+                         </div>
+                         <div class="password">
+                              <i class="fas fa-lock"></i>
+                              <input type="password" name="pwd" id="login-password" placeholder="Password" required>
+                         </div>
+                         <button type="submit" name="login-submit" id="login-final" class="final-login-btn">Log In</button>
+                    </form>
+               </div>
+          </div>
+     </div>
+     <script type="text/javascript">
+        document.getElementById("login").addEventListener("click", function(){
+          document.querySelector(".popup-login").style.visibility = "visible";
+        })
+        document.querySelector(".login-close").addEventListener("click", function(){
+          document.querySelector(".popup-login").style.visibility = "hidden";
+        })
+     </script>
+<!--End of the Login portion-->
+<div class="banner">
+</div>
+<div class="category_details_container">
+
+
+<?php if(count($get_product)>0) {?>
+<div class="container-2">
+     <h2 style="opacity: 0.6;"><?php echo $row['categories'] ?></h2>
+     <div class="flex-box-container-2" id="flex-pic-gen">
+        <?php 
+          foreach($get_product as $list){
+        ?>
+        <!--Start of the single New Arrivals portion-->
+          <div class="product_main">
+               <div class="catergory_thumb">
+                    <a href="product_details.php?id=<?php echo $list['id']?>">
+                         <img src="<?php echo "../media/product/".$list['image']; ?>" alt="product images" class="">
+                    </a>
+               </div>
+               <div class="product_inner">
+                    <h4><a href="product_details.php?id=<?php echo $list['id']?>"><?php echo $list['name']; ?></a></h4>
+                    <ul class="product_prize">
+                         <li class="old_prize"><?php echo "Rs.".$list['mrp']; ?></li>
+                         <li><?php echo "Rs.".$list['price']; ?></li>
+                    </ul>
+               </div>
+          </div>
+        <?php } ?>   
+        <!--End of the single New Arrivals portion-->
+     </div>
+</div>
+<?php } else {
+     echo ' <div class="Existance_Error">
+               <h2 style="opacity: 0.6;">Product For this category is not available</h2>
+            </div>';
+} 
+?>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+  require "footer.php";
+?>
